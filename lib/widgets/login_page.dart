@@ -1,11 +1,12 @@
-import '../account_list.dart';
+
+import 'package:dap/firebase/firebase_auth/authentication.dart';
+import 'package:provider/provider.dart';
+
+import '../account.dart';
 import '../widgets/home_page.dart';
 import 'package:flutter/material.dart';
 import '../widgets/create_account_page.dart';
-
-int userIndex = -1;
-
-
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Login_Page extends StatefulWidget {
   @override
@@ -19,38 +20,17 @@ class _Login_PageState extends State<Login_Page> {
 
   final passController = TextEditingController();
 
-  double thisnumber = 0;
+  String thisMail="";
 
-  String thispassword = "";
+  String thisPassword="";
+  bool valid = true;
 
-  //String userCheckError = "";
   @override
   Widget build(BuildContext context) {
-    submit() {
-      final isValid = formkey.currentState?.validate();
-
-      thisnumber = double.parse(numbController.text);
-      thispassword = passController.text;
-      if (studentList.isEmpty) return;
-       // userCheckError = "Invalid number or password";
-
-      else {
-        for (int i = 0; i < studentList.length; i++) {
-          if (studentList[i].number == thisnumber) {
-            if (studentList[i].password == thispassword) {
-              userIndex = i;
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => Home_Page()));
-              break;
-            }
-          }
-        }
-        //if(numberCheck == false || passwordCheck == false) userCheckError = "Invalid number or password";
-
-      }
-    }
 
     // TODO: implement build
+    final _authService = Provider.of<Authentication>(context);
+
     return Scaffold(
       backgroundColor: Colors.green.shade100,
       appBar: AppBar(
@@ -62,7 +42,6 @@ class _Login_PageState extends State<Login_Page> {
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
-            //  mainAxisAlignment: MainAxisAlignment.center,
             children: [
                const SizedBox(height: 10,),
                const Text(
@@ -71,9 +50,6 @@ class _Login_PageState extends State<Login_Page> {
                ),
                const SizedBox(height: 20,),
 
-             //  UserCheck(numberCheck: numberCheck, passwordCheck: passwordCheck,),
-            //   SizedBox(height: 5,),
-
                Form(
                  key: formkey,
                    child: Column(
@@ -81,27 +57,26 @@ class _Login_PageState extends State<Login_Page> {
                        children: [
 
                          SizedBox(
-                           width: 200,
+                           width:200,
                              height: 50,
                              child: TextFormField(
 
                                controller: numbController,
                                  keyboardType: TextInputType.number,
-                                 onFieldSubmitted: (_)=>submit,
+                                 onChanged: (value){
+                                 setState(() {
+                                   thisMail = value;
+                                 });
+                                 },
                                decoration: InputDecoration(
                                  border: OutlineInputBorder(),
-                                 labelText: "Enter number"
+                                 labelText: "Enter mail"
                                ),
-                               validator: (value){
-                                 // bool numberCheck = false;
-                                 // for(int j = 0 ;j<studentList.length;j++)
-                                 //   if(studentList[j].number == value) numberCheck = true;
-
-                                 if(value!.isEmpty) return "Invalid number";
-
-
-                                 else return null;
-                               },
+                               // validator: (value){
+                               //     if(valid) return null;
+                               //     else return "Invalid email!";
+                               //
+                               // },
                              ),
                          ),
 
@@ -113,15 +88,24 @@ class _Login_PageState extends State<Login_Page> {
                            child: TextFormField(
                              obscureText: true,
                              controller: passController,
-                             onFieldSubmitted: (_)=>submit,
+                             onChanged: (value){
+                               setState(() {
+                                 thisPassword = value;
+                               });
+                             },
                              decoration: InputDecoration(
                                  border: OutlineInputBorder(),
                                  labelText: "Enter password"
                              ),
-                             validator: (value){
-                               if(value!.isEmpty) return "Enter password";
-                               return null;
-                             },
+                             // validator: (value){
+                             //   if(_authService.user != null) return null;
+                             //   else return "Invalid password!";
+                             //
+                             // },
+                             // validator: (value){
+                             //   if(value!.isEmpty) return "Enter password";
+                             //   return null;
+                             // },
                            ),
                          )
                        ],
@@ -131,8 +115,14 @@ class _Login_PageState extends State<Login_Page> {
                SizedBox(height: 10,),
 
                RaisedButton(
-                 onPressed: () {
-                   submit();
+                 onPressed: ()async{
+
+                   await _authService.signInWithEmailAndPassword(thisMail, thisPassword);
+                   if(_authService.user != null) Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Home_Page()));
+                 //  else{
+                  //   valid = false;
+                //   }
+                //   final isValid = formkey.currentState?.validate();
                  },
                  color: Colors.green,
                  child: const Text("Sign in",style: TextStyle(color: Colors.white),),

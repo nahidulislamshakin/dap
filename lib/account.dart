@@ -1,9 +1,6 @@
-class AccountList{
-  final String? name;
-  final String? id;
+class UserAccount{
   final String? email;
-  final double? number;
   final String? password;
-  AccountList({ this.name, this.id, this.email, this.number, this.password});
+  UserAccount({ required this.email, required this.password});
 
 }

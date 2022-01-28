@@ -1,18 +1,12 @@
+import 'package:provider/provider.dart';
+
 import '../widgets/login_page.dart';
 import 'package:flutter/material.dart';
-import '../account_list.dart';
-import '../account_list.dart';
+import '../account.dart';
+import '../account.dart';
 import '../firebase/students/data_write/data_write.dart';
-import '../firebase/firebase_auth/auth_registration.dart';
-
-List<AccountList> studentList = [
-  AccountList(
-      name: "Nahidul Islam Shakin",
-      id: "18ICTCSE046",
-      email: "shakinhabib2000@gmail.com",
-      number: 01954841508,
-      password: "1234")
-];
+import '../firebase/firebase_auth/authentication.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Create_Account_Page extends StatefulWidget {
   @override
@@ -32,50 +26,18 @@ class _Create_Account_PageState extends State<Create_Account_Page> {
   String inname = "";
   String inid = "";
   String inmail = "";
-  double innumber = 0;
+  String innumber = "";
   String inpassword = "";
   String incpass = "";
+  bool valid = false;
 
-  //double innumber = -1;
-
-  void SubmitData() {
-    final isValid = formkey.currentState?.validate();
-
-    inname = namecontroller.text;
-    inid = idcontroller.text;
-    inmail = mailcontroller.text;
-    innumber = double.parse(numbercontroller.text);
-    inpassword = passwordcontroller.text;
-    incpass = cpasswordcontroller.text;
-
-    if (inname.isEmpty) return;
-    if (inid.isEmpty) return;
-    if (inmail.isEmpty) return;
-    if (innumber < 0) return;
-
-    if (inpassword.isEmpty || incpass.isEmpty || inpassword != incpass)
-      return;
-    else {
-      final addAccount = AccountList(
-          name: inname,
-          id: inid,
-          email: inmail,
-          number: innumber,
-          password: inpassword);
-      studentList.add(addAccount);
-      // else{
-      //Navigator.of(context).pushNamed('/login_page');
-
-    }
-
-    AuthRegistration(email: inmail, password: incpass);
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => Login_Page()));
-  }
 
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
+
+    final _authService = Provider.of<Authentication>(context);
+
     return Scaffold(
       backgroundColor: Colors.green.shade100,
       appBar: AppBar(
@@ -97,7 +59,11 @@ class _Create_Account_PageState extends State<Create_Account_Page> {
                     children: [
                       TextFormField(
                         controller: namecontroller,
-                        onFieldSubmitted: (_) => SubmitData,
+                        onChanged: (value) {
+                          setState(() {
+                            inname = value;
+                          });
+                        } ,
                         decoration: const InputDecoration(
                             //    border: OutlineInputBorder(),
                             labelText: "Name",
@@ -110,7 +76,11 @@ class _Create_Account_PageState extends State<Create_Account_Page> {
                       ),
                       TextFormField(
                         controller: idcontroller,
-                        onFieldSubmitted: (_) => SubmitData,
+                        onChanged: (value) {
+                          setState(() {
+                            inid = value;
+                          });
+                        } ,
                         decoration: const InputDecoration(
                             //    border: OutlineInputBorder(),
                             labelText: "ID",
@@ -123,22 +93,32 @@ class _Create_Account_PageState extends State<Create_Account_Page> {
                       ),
                       TextFormField(
                         controller: mailcontroller,
-                        onFieldSubmitted: (_) => SubmitData,
+                        onChanged: (value) {
+                          setState(() {
+                            inmail = value;
+                          });
+                        } ,
                         keyboardType: TextInputType.emailAddress,
                         decoration: const InputDecoration(
                             //    border: OutlineInputBorder(),
                             labelText: "E-mail",
                             hintText: "Enter your E-mail",
                             icon: Icon(Icons.email)),
-                        validator: (value) {
-                          if (value!.length < 4)
-                            return "Enter your mail please";
-                          return null;
+                        validator: (value){
+
+                          if(value!.isEmpty) return "Enter email";
+                           return null;
+
+
                         },
                       ),
                       TextFormField(
                         controller: numbercontroller,
-                        onFieldSubmitted: (_) => SubmitData,
+                        onChanged: (value) {
+                          setState(() {
+                            innumber = value;
+                          });
+                        } ,
                         keyboardType: TextInputType.number,
                         decoration: const InputDecoration(
                             //     border: OutlineInputBorder(),
@@ -146,22 +126,19 @@ class _Create_Account_PageState extends State<Create_Account_Page> {
                             hintText: "Enter your phone number",
                             icon: Icon(Icons.phone)),
                         validator: (value) {
-                          if (value!.isEmpty)
+                          if (value!.isEmpty) {
                             return "Enter your number please";
-                          else {
-                            for (int i = 0; i < studentList.length; i++) {
-                              if (studentList[i].number == innumber) {
-                                return "Number is already used";
-                                break;
-                              }
-                            }
                           }
                           return null;
                         },
                       ),
                       TextFormField(
                         controller: passwordcontroller,
-                        onFieldSubmitted: (_) => SubmitData,
+                        onChanged: (value) {
+                          setState(() {
+                            inpassword = value;
+                          });
+                        } ,
                         obscureText: true,
                         decoration: const InputDecoration(
                             //    border: OutlineInputBorder(),
@@ -169,15 +146,20 @@ class _Create_Account_PageState extends State<Create_Account_Page> {
                             hintText: "Enter your password",
                             icon: Icon(Icons.password)),
                         validator: (value) {
-                          if (value!.isEmpty)
-                            return "Enter your password please";
+                          if (value!.isEmpty || value.length<6) {
+                            return "Enter your password which should be more than 6 characters";
+                          }
 
                           return null;
                         },
                       ),
                       TextFormField(
                         controller: cpasswordcontroller,
-                        onFieldSubmitted: (_) => SubmitData,
+                        onChanged: (value) {
+                          setState(() {
+                            incpass = value;
+                          });
+                        } ,
                         obscureText: true,
                         decoration: const InputDecoration(
                             //       border: OutlineInputBorder(),
@@ -185,10 +167,9 @@ class _Create_Account_PageState extends State<Create_Account_Page> {
                             hintText: "Confirm Password",
                             icon: Icon(Icons.password)),
                         validator: (value) {
-                          if (value!.isEmpty)
+                          if (value!.isEmpty || inpassword != incpass) {
                             return "Confirm your password please";
-                          else if (inpassword != incpass)
-                            return "Confirm your password correctly";
+                          }
                           return null;
                         },
                       ),
@@ -199,9 +180,12 @@ class _Create_Account_PageState extends State<Create_Account_Page> {
                   height: 5,
                 ),
                 RaisedButton(
-                  onPressed: () {
-                    //Navigator.of(context).pushNamed('/login_page');
-                    SubmitData();
+                  onPressed: ()async{
+
+                   await _authService.createAccountWithEmailAndPassword(inmail, incpass, inname, inid, innumber);
+                   if(_authService.user != null) Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> Login_Page()));
+                //   else valid = false;
+                  // final isValid = formkey.currentState?.validate();
                   },
                   color: Colors.green,
                   child: const Text(
@@ -215,8 +199,6 @@ class _Create_Account_PageState extends State<Create_Account_Page> {
 
                 //goto sign in button
                 Column(
-                  //mainAxisAlignment: MainAxisAlignment.center,
-                  //crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     SizedBox(
                       height: 5,
@@ -225,10 +207,6 @@ class _Create_Account_PageState extends State<Create_Account_Page> {
                     FlatButton(
                         onPressed: () {
                           Navigator.of(context).pushNamed('/login_page');
-                          // Navigator.push(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //         builder: (context) => Login_Page()));
                         },
                         child: const Text(
                           "Sign in",

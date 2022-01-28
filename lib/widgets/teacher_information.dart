@@ -1,4 +1,6 @@
+import 'package:dap/firebase/firebase_auth/authentication.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class TeacherPage extends StatefulWidget {
   @override
@@ -10,6 +12,9 @@ class _TeacherPageState extends State<TeacherPage> {
   Widget build(BuildContext context) {
 
     // TODO: implement build
+
+    final _authService = Provider.of<Authentication>(context);
+
     return Scaffold(
       backgroundColor: Colors.green.shade100,
       appBar: AppBar(
@@ -45,8 +50,9 @@ class _TeacherPageState extends State<TeacherPage> {
               onTap: () {},
             ),            ListTile(
               title: const Text('Logout'),
-              onTap: () {
-                Navigator.of(context).pushNamed('/login_page');
+              onTap: () async{
+                await _authService.signOut();
+
               },
             ),
           ],
