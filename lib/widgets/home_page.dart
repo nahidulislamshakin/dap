@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dap/firebase/firebase_auth/authentication.dart';
+import 'package:dap/widgets/about.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../widgets/create_account_page.dart';
@@ -14,6 +16,40 @@ class Home_Page extends StatefulWidget {
 }
 
 class _Home_PageState extends State<Home_Page> {
+  String? uid;
+
+  String? email;
+
+  Future<void> getUser() async {
+    final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+    final User currentUser = firebaseAuth.currentUser!;
+    // return currentUser;
+    uid = currentUser.uid;
+    email = currentUser.email;
+  }
+
+  String? currentUserName;
+
+  Future<void> getUserName() async {
+    FirebaseFirestore.instance
+        .collection("Students")
+        .doc(uid)
+        .get()
+        .then((value) {
+      setState(() {
+        currentUserName = value.get("name").toString();
+      });
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getUser();
+    getUserName();
+  }
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -31,9 +67,17 @@ class _Home_PageState extends State<Home_Page> {
           child: ListView(
             children: [
               UserAccountsDrawerHeader(
-                accountName: Text("Shakin"),
-                accountEmail: Text("shakin"),
-                decoration: BoxDecoration(
+                accountName: Text(
+                  "$currentUserName",
+                  style: GoogleFonts.openSans(
+                      textStyle: const TextStyle(
+                          fontWeight: FontWeight.bold, color: Colors.black)),
+                ),
+                accountEmail: Text("$email",
+                  style: GoogleFonts.openSans(
+                      textStyle: const TextStyle(
+                          color: Colors.black)),),
+                decoration: const BoxDecoration(
                     gradient: LinearGradient(
                         begin: Alignment.bottomLeft,
                         end: Alignment.topRight,
@@ -68,6 +112,15 @@ class _Home_PageState extends State<Home_Page> {
                 title: const Text('Logout'),
                 onTap: () async {
                   await _authService.signOut();
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) => Login_Page()));
+                },
+              ),
+              ListTile(
+                title: const Text('About'),
+                onTap: (){
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>About()));
+
                 },
               ),
             ],
@@ -75,7 +128,7 @@ class _Home_PageState extends State<Home_Page> {
         ),
         body: StreamBuilder<QuerySnapshot>(
             stream:
-            FirebaseFirestore.instance.collection("Chairman").snapshots(),
+                FirebaseFirestore.instance.collection("Chairman").snapshots(),
             builder:
                 (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (snapshot.hasError) {
@@ -109,7 +162,7 @@ class _Home_PageState extends State<Home_Page> {
                 final data = snapshot.requireData;
                 return SingleChildScrollView(
                   child: Padding(
-                    padding: EdgeInsets.all(05),
+                    padding: const EdgeInsets.all(05),
                     child: Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -128,43 +181,43 @@ class _Home_PageState extends State<Home_Page> {
                                       color: Colors.green.shade300,
                                       borderRadius: BorderRadius.circular(20)),
                                   width: double.infinity,
-                                  child: Center(
+                                  child: const Center(
                                       child: (Text(
-                                        "Message from Chairman",
-                                        style: TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold),
-                                      ))),
+                                    "Message from Chairman",
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold),
+                                  ))),
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 10,
                                 ),
-                                Container(
+                                SizedBox(
                                   width: 300,
                                   height: 300,
                                   child: Image.network(
                                     "https://www.bsmrstu.edu.bd/dev/departments/cse/uploaded_image/chairman/saleh Ahmed Pic.jpg",
                                   ),
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 05,
                                 ),
                                 Text(
                                   "${data.docs[0]["Name"]}",
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold),
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 10,
                                 ),
                                 Text("${data.docs[0]["speech"]}",
                                     style: GoogleFonts.openSans(
-                                        textStyle: TextStyle(fontSize: 17))),
+                                        textStyle: const TextStyle(fontSize: 17))),
                               ],
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 20,
                           ),
                           Container(
@@ -173,15 +226,14 @@ class _Home_PageState extends State<Home_Page> {
                                 color: Colors.green.shade300,
                                 borderRadius: BorderRadius.circular(20)),
                             width: double.infinity,
-                            child: Center(
+                            child: const Center(
                                 child: (Text(
-                                  "News Room",
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold),
-                                ))),
+                              "News Room",
+                              style: TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.bold),
+                            ))),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 10,
                           ),
                           StreamBuilder<QuerySnapshot>(
@@ -192,79 +244,63 @@ class _Home_PageState extends State<Home_Page> {
                                 AsyncSnapshot<QuerySnapshot> snapshot) {
                               final data = snapshot.requireData;
                               if (!snapshot.hasData) {
-                                return Text(
+                                return const Text(
                                   "News list is empty",
                                   style: TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold),
                                 );
                               }
-                              if(snapshot.hasError){
-                                return Text(
+                              if (snapshot.hasError) {
+                                return const Text(
                                   "Something went wrong",
                                   style: TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold),
                                 );
-                              }
-
-                              else {
-                                if (data.docs[0]["news"].length <1)
-                                  return Text(
+                              } else {
+                                if (data.docs[0]["news"].length < 1) {
+                                  return const Text(
                                     "News list is empty",
                                     style: TextStyle(
                                         fontSize: 20,
                                         fontWeight: FontWeight.bold),
                                   );
+                                }
 
                                 // return Text("${data.docs[0]["news"]}",
                                 //     style: GoogleFonts.openSans(
                                 //         textStyle: TextStyle(fontSize: 17)));
                                 //
                                 return Container(
-                                  padding: EdgeInsets.all(10),
-                                  margin: EdgeInsets.all(10),
+                                  padding: const EdgeInsets.all(10),
+                                  margin: const EdgeInsets.all(10),
                                   width: double.infinity,
-                                    height: 400,
+                                  height: 400,
                                   child: ListView.builder(
-
-                                    itemCount: snapshot.data?.size,
+                                      itemCount: snapshot.data?.size,
                                       itemBuilder: (context, index) {
                                         final news = snapshot.requireData;
-                                        return Text("${news.docs[index]["news"]}",
+                                        return Text(
+                                          "${news.docs[index]["news"]}",
                                           style: GoogleFonts.openSans(
-                                              textStyle: TextStyle(
-                                                  fontSize: 17)),);
+                                              textStyle:
+                                                  TextStyle(fontSize: 17)),
+                                        );
                                       }),
                                 );
                               }
                             },
                           ),
-                          SizedBox(height: 500,)
+                          const SizedBox(
+                            height: 500,
+                          )
                         ],
                       ),
                     ),
                   ),
                 );
               }
-            })
-      //
-      // Padding(
-      //   padding: EdgeInsets.all(10),
-      //   child: Column(
-      //     mainAxisAlignment: MainAxisAlignment.start,
-      //     crossAxisAlignment: CrossAxisAlignment.center,
-      //     children: [
-      //       Align(
-      //         alignment: Alignment.centerLeft,
-      //         child: Image.network("https://www.bsmrstu.edu.bd/dev/departments/cse/uploaded_image/chairman/saleh Ahmed Pic.jpg",fit: BoxFit.cover,),
-      //       ),
-      //       SizedBox(height: 05,),
-      //       Text("")
-      //
-      //     ],
-      // ),
-      // )
-    );
+            }));
   }
 }

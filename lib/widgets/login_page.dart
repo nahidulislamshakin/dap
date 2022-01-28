@@ -35,7 +35,7 @@ class _Login_PageState extends State<Login_Page> {
       backgroundColor: Colors.green.shade100,
       appBar: AppBar(
         centerTitle: true,
-        title: Text("Computer Science Engineering"),
+        title: const Text("Computer Science Engineering"),
       ),
       body: SizedBox(
         width: double.infinity,
@@ -57,7 +57,7 @@ class _Login_PageState extends State<Login_Page> {
                        children: [
 
                          SizedBox(
-                           width:200,
+                           width:300,
                              height: 50,
                              child: TextFormField(
 
@@ -68,7 +68,7 @@ class _Login_PageState extends State<Login_Page> {
                                    thisMail = value;
                                  });
                                  },
-                               decoration: InputDecoration(
+                               decoration: const InputDecoration(
                                  border: OutlineInputBorder(),
                                  labelText: "Enter mail"
                                ),
@@ -80,10 +80,10 @@ class _Login_PageState extends State<Login_Page> {
                              ),
                          ),
 
-                         SizedBox(height: 15,),
+                         const SizedBox(height: 15,),
 
                          SizedBox(
-                           width: 200,
+                           width: 300,
                            height: 50,
                            child: TextFormField(
                              obscureText: true,
@@ -93,7 +93,7 @@ class _Login_PageState extends State<Login_Page> {
                                  thisPassword = value;
                                });
                              },
-                             decoration: InputDecoration(
+                             decoration: const InputDecoration(
                                  border: OutlineInputBorder(),
                                  labelText: "Enter password"
                              ),
@@ -112,13 +112,19 @@ class _Login_PageState extends State<Login_Page> {
                    ),
                ),
 
-               SizedBox(height: 10,),
+               const SizedBox(height: 10,),
 
                RaisedButton(
                  onPressed: ()async{
 
                    await _authService.signInWithEmailAndPassword(thisMail, thisPassword);
-                   if(_authService.user != null) Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Home_Page()));
+
+                   if(_authService.user != null) {
+                     User? currentUser = FirebaseAuth.instance.currentUser;
+                     Navigator.pushReplacement(
+                         context, MaterialPageRoute(builder:
+                         (context) => Home_Page()));
+                   }
                  //  else{
                   //   valid = false;
                 //   }
@@ -147,42 +153,8 @@ class _Login_PageState extends State<Login_Page> {
                    color: Colors.green,
                    child: const Text("Create Acoount",style: TextStyle(color:Colors.white),)),
               //
-              SizedBox(height: 200,),
+              const SizedBox(height: 200,),
 
-              Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Divider(
-                    thickness: 2,
-                  ),
-                  Container(
-                    width: double.infinity,
-                    margin: EdgeInsets.all(20),
-                    padding: EdgeInsets.all(20),
-                    // color: Colors.black,
-
-                    child: Column(
-                      children: [
-                        Text(
-                          "Developer:",
-                          style: TextStyle(color: Colors.black),
-                        ),
-
-                        SizedBox(
-                          height: 10,
-                        ),
-
-                        Text(
-                          "Nahidul Islam Shakin",
-                          style: TextStyle(color: Colors.black),
-                        ),
-                        //),
-                      ],
-                    ),
-                  ),
-                ],
-              )
             ],
           ),
         ),

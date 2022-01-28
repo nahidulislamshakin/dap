@@ -200,7 +200,7 @@ class _Create_Account_PageState extends State<Create_Account_Page> {
                 //goto sign in button
                 Column(
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       height: 5,
                     ),
                     const Text('Already have an account?'),
