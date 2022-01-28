@@ -281,11 +281,18 @@ class _Home_PageState extends State<Home_Page> {
                                       itemCount: snapshot.data?.size,
                                       itemBuilder: (context, index) {
                                         final news = snapshot.requireData;
-                                        return Text(
-                                          "${news.docs[index]["news"]}",
-                                          style: GoogleFonts.openSans(
-                                              textStyle:
-                                                  TextStyle(fontSize: 17)),
+                                        return Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              "${news.docs[index]["news"]}",
+                                              style: GoogleFonts.openSans(
+                                                  textStyle:
+                                                      const TextStyle(fontSize: 17)),
+                                            ),
+                                            const SizedBox(height: 10,),
+                                          ],
                                         );
                                       }),
                                 );
