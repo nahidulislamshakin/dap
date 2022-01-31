@@ -10,10 +10,9 @@ class IntroScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
-        body: Container(
-          // color: Colors.red,
-          padding: EdgeInsets.symmetric(vertical: 150),
-          // decoration: BoxDecoration(image: DecorationImage(image: AssetImage("image/background3.jpg"))),
+        body: SizedBox(
+
+          height: double.infinity,
           child: IntroductionScreen(
             key: GlobalKey<IntroductionScreenState>(),
             globalBackgroundColor: Colors.white,
@@ -74,8 +73,8 @@ class IntroScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                      width: 130,
-                      height: 45,
+                      width: 120,
+                      height: 40,
                       decoration: BoxDecoration(
                           color: Colors.green,
                           borderRadius: BorderRadius.circular(50)),
@@ -97,8 +96,8 @@ class IntroScreen extends StatelessWidget {
                       width: 30,
                     ),
                     Container(
-                      width: 130,
-                      height: 45,
+                      width: 120,
+                      height: 40,
                       decoration: BoxDecoration(
                           color: Colors.green,
                           borderRadius: BorderRadius.circular(50)),

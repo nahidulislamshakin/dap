@@ -24,7 +24,7 @@ class AnimatedSplash extends StatelessWidget {
         ],
       ),
       splashIconSize: 1000,
-      duration: 3000,
+      duration: 2500,
       splashTransition: SplashTransition.fadeTransition,
       nextScreen: nextScreen,
       pageTransitionType: PageTransitionType.fade,
