@@ -1,5 +1,6 @@
 
 import 'package:dap/firebase/firebase_auth/authentication.dart';
+import 'package:dap/widgets/splash_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../account.dart';
@@ -7,6 +8,8 @@ import '../widgets/home_page.dart';
 import 'package:flutter/material.dart';
 import '../widgets/create_account_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
+import 'loading.dart';
 
 class Login_Page extends StatefulWidget {
   @override
@@ -58,11 +61,11 @@ class _Login_PageState extends State<Login_Page> {
 
                          SizedBox(
                            width:300,
-                             height: 50,
+                             height: 60,
                              child: TextFormField(
 
                                controller: numbController,
-                                 keyboardType: TextInputType.number,
+                                 keyboardType: TextInputType.emailAddress,
                                  onChanged: (value){
                                  setState(() {
                                    thisMail = value;
@@ -72,11 +75,10 @@ class _Login_PageState extends State<Login_Page> {
                                  border: OutlineInputBorder(),
                                  labelText: "Enter mail"
                                ),
-                               // validator: (value){
-                               //     if(valid) return null;
-                               //     else return "Invalid email!";
-                               //
-                               // },
+                               validator: (value){
+                                 if(value!.isEmpty) return "Enter email";
+                                 return null;
+                               },
                              ),
                          ),
 
@@ -84,7 +86,7 @@ class _Login_PageState extends State<Login_Page> {
 
                          SizedBox(
                            width: 300,
-                           height: 50,
+                           height: 60,
                            child: TextFormField(
                              obscureText: true,
                              controller: passController,
@@ -102,10 +104,10 @@ class _Login_PageState extends State<Login_Page> {
                              //   else return "Invalid password!";
                              //
                              // },
-                             // validator: (value){
-                             //   if(value!.isEmpty) return "Enter password";
-                             //   return null;
-                             // },
+                             validator: (value){
+                               if(value!.isEmpty) return "Enter password";
+                               return null;
+                             },
                            ),
                          )
                        ],
@@ -116,14 +118,13 @@ class _Login_PageState extends State<Login_Page> {
 
                RaisedButton(
                  onPressed: ()async{
-
+                   final isValid = formkey.currentState?.validate();
                    await _authService.signInWithEmailAndPassword(thisMail, thisPassword);
 
                    if(_authService.user != null) {
-                     User? currentUser = FirebaseAuth.instance.currentUser;
                      Navigator.pushReplacement(
                          context, MaterialPageRoute(builder:
-                         (context) => Home_Page()));
+                         (context) => Splash(imagePath: 'hand-loading.json', nextScreen: Home_Page(),)));
                    }
                  //  else{
                   //   valid = false;

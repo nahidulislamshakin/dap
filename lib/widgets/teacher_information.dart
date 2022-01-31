@@ -1,11 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dap/firebase/firebase_auth/authentication.dart';
+import 'package:dap/widgets/student_information.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import 'about.dart';
+import 'home_page.dart';
 import 'login_page.dart';
 
 class TeacherPage extends StatefulWidget {
@@ -83,19 +85,21 @@ class _TeacherPageState extends State<TeacherPage> {
               ListTile(
                   title: const Text("News Feed"),
                   onTap: () {
-                    Navigator.of(context).pushNamed('/home_page');
+                    Navigator.pushReplacement(context, MaterialPageRoute(builder:(context)=>Home_Page()));
                   }),
               ListTile(
                 title: const Text(
                   'Teacher\'s Information',
                   style: TextStyle(color: Colors.green),
                 ),
-                onTap: () {},
+                onTap: () {
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>TeacherPage()));
+                },
               ),
               ListTile(
                 title: const Text('Student\'s Information'),
                 onTap: () {
-                  Navigator.of(context).pushNamed('./student_information');
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>StudentPage()));
                 },
               ),
               ListTile(

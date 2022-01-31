@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dap/firebase/firebase_auth/authentication.dart';
 import 'package:dap/widgets/about.dart';
+import 'package:dap/widgets/teacher_information.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -84,24 +85,22 @@ class _Home_PageState extends State<Home_Page> {
                         colors: [Colors.green, Colors.lightGreen])),
               ),
               ListTile(
-                  title: const Text(
-                    "News Feed",
-                    style: TextStyle(color: Colors.green),
-                  ),
+                  title: const Text("News Feed",style: TextStyle(color: Colors.green),),
                   onTap: () {
-                    Navigator.of(context).pushNamed('./home_page');
+                    Navigator.pushReplacement(context, MaterialPageRoute(builder:(context)=>Home_Page()));
                   }),
               ListTile(
-                title: const Text('Teacher\'s Information'),
+                title: const Text(
+                  'Teacher\'s Information',
+                ),
                 onTap: () {
-                  Navigator.of(context).pushNamed('./teacher_information');
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>TeacherPage()));
                 },
               ),
               ListTile(
                 title: const Text('Student\'s Information'),
                 onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => StudentPage()));
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>StudentPage()));
                 },
               ),
               ListTile(
@@ -275,10 +274,13 @@ class _Home_PageState extends State<Home_Page> {
                                 return Container(
                                   padding: const EdgeInsets.all(10),
                                   margin: const EdgeInsets.all(10),
-                                  width: double.infinity,
-                                  height: 400,
+                                //  width: double.infinity,
+                              //    height: 400,
                                   child: ListView.builder(
+                                    shrinkWrap: true,
+                                      physics: NeverScrollableScrollPhysics(),
                                       itemCount: snapshot.data?.size,
+                                      reverse: true,
                                       itemBuilder: (context, index) {
                                         final news = snapshot.requireData;
                                         return Column(
@@ -291,7 +293,7 @@ class _Home_PageState extends State<Home_Page> {
                                                   textStyle:
                                                       const TextStyle(fontSize: 17)),
                                             ),
-                                            const SizedBox(height: 10,),
+                                            const SizedBox(height: 25,),
                                           ],
                                         );
                                       }),
@@ -300,7 +302,7 @@ class _Home_PageState extends State<Home_Page> {
                             },
                           ),
                           const SizedBox(
-                            height: 500,
+                            height: 80,
                           )
                         ],
                       ),

@@ -1,3 +1,5 @@
+import 'package:dap/widgets/introduction.dart';
+import 'package:dap/widgets/splash_screen.dart';
 import 'package:dap/wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -9,6 +11,7 @@ import 'widgets/teacher_information.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'dart:async';
 import '../firebase/firebase_auth/authentication.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 FirebaseOptions get firebaseOptions => const FirebaseOptions(
     apiKey: 'AIzaSyCA_H3mG6AclrDt-5C6Jp49ZIDZ9XR7YbA',
@@ -22,9 +25,16 @@ Future<void> initializeDefult() async {
   print("Initialized default app $app");
 }
 
+int? initScreen;
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDefult();
+  SharedPreferences preferences = await SharedPreferences.getInstance();
+  initScreen = await preferences.getInt("initScreen");
+  await preferences.setInt("initScreen", 1);
+
+
 
   runApp(MyApp());
 }
@@ -35,7 +45,9 @@ class MyApp extends StatelessWidget {
     // TODO: implement build
     return MultiProvider(
       providers: [
-        Provider<Authentication>(create: (context) => Authentication(),),
+        Provider<Authentication>(
+          create: (context) => Authentication(),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -43,9 +55,14 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.green,
           accentColor: Colors.red,
         ),
-         initialRoute: '/wrapper',
+        // initialRoute: initScreen == 0 || initScreen == null ? 'introduction' : ,
+        home: initScreen == 0 || initScreen == null
+            ? AnimatedSplash(nextScreen: IntroScreen())
+            : AnimatedSplash(nextScreen: Wrapper()),
         routes: {
-          '/wrapper' : (context) => Wrapper(),
+          'splash_screen': (context) => AnimatedSplash(nextScreen: Wrapper()),
+          '/introduction': (context) => IntroScreen(),
+          '/wrapper': (context) => Wrapper(),
           '/login_page': (context) => Login_Page(),
           '/create_account': (context) => Create_Account_Page(),
           '/home_page': (context) => Home_Page(),

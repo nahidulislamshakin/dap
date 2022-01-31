@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dap/firebase/firebase_auth/authentication.dart';
 import 'package:dap/widgets/home_page.dart';
 import 'package:dap/widgets/student_information.dart';
+import 'package:dap/widgets/teacher_information.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -92,13 +93,13 @@ class _AboutState extends State<About> {
             ListTile(
               title: const Text('Teacher\'s Information'),
               onTap: () {
-                Navigator.of(context).pushNamed('./teacher_information');
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (conte)=>TeacherPage()));
               },
             ),
             ListTile(
               title: const Text('Student\'s Information'),
               onTap: () {
-                Navigator.push(context,
+                Navigator.pushReplacement(context,
                     MaterialPageRoute(builder: (context) => StudentPage()));
               },
             ),

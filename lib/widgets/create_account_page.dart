@@ -1,12 +1,13 @@
+import 'package:dap/widgets/splash_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../widgets/login_page.dart';
 import 'package:flutter/material.dart';
 import '../account.dart';
-import '../account.dart';
-import '../firebase/students/data_write/data_write.dart';
 import '../firebase/firebase_auth/authentication.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
+import 'loading.dart';
 
 class Create_Account_Page extends StatefulWidget {
   @override
@@ -30,7 +31,6 @@ class _Create_Account_PageState extends State<Create_Account_Page> {
   String inpassword = "";
   String incpass = "";
   bool valid = false;
-
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +63,7 @@ class _Create_Account_PageState extends State<Create_Account_Page> {
                           setState(() {
                             inname = value;
                           });
-                        } ,
+                        },
                         decoration: const InputDecoration(
                             //    border: OutlineInputBorder(),
                             labelText: "Name",
@@ -80,7 +80,7 @@ class _Create_Account_PageState extends State<Create_Account_Page> {
                           setState(() {
                             inid = value;
                           });
-                        } ,
+                        },
                         decoration: const InputDecoration(
                             //    border: OutlineInputBorder(),
                             labelText: "ID",
@@ -97,19 +97,16 @@ class _Create_Account_PageState extends State<Create_Account_Page> {
                           setState(() {
                             inmail = value;
                           });
-                        } ,
+                        },
                         keyboardType: TextInputType.emailAddress,
                         decoration: const InputDecoration(
                             //    border: OutlineInputBorder(),
                             labelText: "E-mail",
                             hintText: "Enter your E-mail",
                             icon: Icon(Icons.email)),
-                        validator: (value){
-
-                          if(value!.isEmpty) return "Enter email";
-                           return null;
-
-
+                        validator: (value) {
+                          if (value!.isEmpty) return "Enter email";
+                          return null;
                         },
                       ),
                       TextFormField(
@@ -118,7 +115,7 @@ class _Create_Account_PageState extends State<Create_Account_Page> {
                           setState(() {
                             innumber = value;
                           });
-                        } ,
+                        },
                         keyboardType: TextInputType.number,
                         decoration: const InputDecoration(
                             //     border: OutlineInputBorder(),
@@ -138,7 +135,7 @@ class _Create_Account_PageState extends State<Create_Account_Page> {
                           setState(() {
                             inpassword = value;
                           });
-                        } ,
+                        },
                         obscureText: true,
                         decoration: const InputDecoration(
                             //    border: OutlineInputBorder(),
@@ -146,7 +143,7 @@ class _Create_Account_PageState extends State<Create_Account_Page> {
                             hintText: "Enter your password",
                             icon: Icon(Icons.password)),
                         validator: (value) {
-                          if (value!.isEmpty || value.length<6) {
+                          if (value!.isEmpty || value.length < 6) {
                             return "Enter your password which should be more than 6 characters";
                           }
 
@@ -159,7 +156,7 @@ class _Create_Account_PageState extends State<Create_Account_Page> {
                           setState(() {
                             incpass = value;
                           });
-                        } ,
+                        },
                         obscureText: true,
                         decoration: const InputDecoration(
                             //       border: OutlineInputBorder(),
@@ -180,12 +177,20 @@ class _Create_Account_PageState extends State<Create_Account_Page> {
                   height: 5,
                 ),
                 RaisedButton(
-                  onPressed: ()async{
+                  onPressed: () async {
+                    final isValid = formkey.currentState?.validate();
 
-                   await _authService.createAccountWithEmailAndPassword(inmail, incpass, inname, inid, innumber);
-                   if(_authService.user != null) Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> Login_Page()));
-                //   else valid = false;
-                  // final isValid = formkey.currentState?.validate();
+                    await _authService.createAccountWithEmailAndPassword(
+                        inmail, incpass, inname, inid, innumber);
+                    if (_authService.user != null)
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => Splash(
+                                    imagePath: "loading.json",
+                                    nextScreen: Login_Page(),
+                                  )));
+                    //   else valid = false;
                   },
                   color: Colors.green,
                   child: const Text(

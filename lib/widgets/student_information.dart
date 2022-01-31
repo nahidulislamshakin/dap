@@ -1,12 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dap/firebase/firebase_auth/authentication.dart';
 import 'package:dap/widgets/login_page.dart';
+import 'package:dap/widgets/teacher_information.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-
 import 'about.dart';
+import 'home_page.dart';
 
 class StudentPage extends StatefulWidget {
   @override
@@ -20,14 +21,14 @@ class _StudentPageState extends State<StudentPage> {
 
   Future<void> getUser() async{
     final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-    final User currentUser = firebaseAuth.currentUser!;
+    final User currentUser = await firebaseAuth.currentUser!;
     // return currentUser;
     uid = currentUser.uid;
     email = currentUser.email;
   }
   String? currentUserName;
   Future<void> getUserName() async{
-     FirebaseFirestore.instance.collection("Students").doc(uid).get().then((value){
+    await FirebaseFirestore.instance.collection("Students").doc(uid).get().then((value){
       setState(() {
         currentUserName = value.get("name").toString();
       });
@@ -75,20 +76,21 @@ class _StudentPageState extends State<StudentPage> {
             ListTile(
                 title: const Text("News Feed"),
                 onTap: () {
-                  Navigator.of(context).pushNamed('/home_page');
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder:(context)=>Home_Page()));
                 }),
             ListTile(
-              title: const Text('Teacher\'s Information'),
+              title: const Text(
+                'Teacher\'s Information',
+              ),
               onTap: () {
-                Navigator.of(context).pushNamed('./teacher_information');
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>TeacherPage()));
               },
             ),
             ListTile(
-              title: const Text(
-                'Student\'s Information',
-                style: TextStyle(color: Colors.green),
-              ),
-              onTap: () {},
+              title: const Text('Student\'s Information',style: TextStyle(color: Colors.green),),
+              onTap: () {
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>StudentPage()));
+              },
             ),
             ListTile(
               title: const Text('Settings'),
@@ -98,7 +100,8 @@ class _StudentPageState extends State<StudentPage> {
               title: const Text('Logout'),
               onTap: () async {
                 await _authService.signOut();
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Login_Page()));
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => Login_Page()));
               },
             ),
             ListTile(
@@ -138,7 +141,6 @@ class _StudentPageState extends State<StudentPage> {
                   ],
                 ),
               );
-
           }
 
           if(snapshot.connectionState == ConnectionState.waiting){
