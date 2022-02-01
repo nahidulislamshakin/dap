@@ -6,6 +6,8 @@ import 'package:flutter/cupertino.dart';
 class Authentication {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
+
+
   UserAccount? userFromFirebase(User? user) {
     if (user == null) {
       return null;

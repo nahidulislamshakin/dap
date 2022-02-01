@@ -19,14 +19,15 @@ class _StudentPageState extends State<StudentPage> {
   String? email;
 
 
-  Future<void> getUser() async{
-    final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-    final User currentUser = await firebaseAuth.currentUser!;
-    // return currentUser;
-    uid = currentUser.uid;
-    email = currentUser.email;
-  }
   String? currentUserName;
+
+  Future<void> getUser()async{
+    final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+    final User currentUser = firebaseAuth.currentUser!;
+    uid = currentUser.uid;
+    email =currentUser.email;
+  }
+
   Future<void> getUserName() async{
     await FirebaseFirestore.instance.collection("Students").doc(uid).get().then((value){
       setState(() {
@@ -34,6 +35,7 @@ class _StudentPageState extends State<StudentPage> {
       });
     });
   }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -41,11 +43,14 @@ class _StudentPageState extends State<StudentPage> {
     getUser();
     getUserName();
   }
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
 
     final _authService = Provider.of<Authentication>(context);
+
+
 
     final Stream<QuerySnapshot> users = FirebaseFirestore.instance.collection("Students").snapshots();
 
