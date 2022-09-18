@@ -176,12 +176,13 @@ class _Create_Account_PageState extends State<Create_Account_Page> {
                 const SizedBox(
                   height: 5,
                 ),
-                RaisedButton(
+
+                ElevatedButton(
                   onPressed: () async {
                     final isValid = formkey.currentState?.validate();
 
                     await _authService.createAccountWithEmailAndPassword(
-                        inmail, incpass, inname, inid, innumber);
+                        inmail.toString().trim(), incpass.toString().trim(), inname, inid, innumber);
                     if (_authService.user != null)
                       Navigator.pushReplacement(
                           context,
@@ -192,7 +193,7 @@ class _Create_Account_PageState extends State<Create_Account_Page> {
                                   )));
                     //   else valid = false;
                   },
-                  color: Colors.green,
+                  //color: Colors.green,
                   child: const Text(
                     "Submit",
                     style: TextStyle(color: Colors.white),
@@ -209,7 +210,7 @@ class _Create_Account_PageState extends State<Create_Account_Page> {
                       height: 5,
                     ),
                     const Text('Already have an account?'),
-                    FlatButton(
+                    TextButton(
                         onPressed: () {
                           Navigator.of(context).pushNamed('/login_page');
                         },

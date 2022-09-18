@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dap/firebase/firebase_auth/authentication.dart';
 import 'package:dap/widgets/about.dart';
+import 'package:dap/widgets/setting.dart';
 import 'package:dap/widgets/teacher_information.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
@@ -18,6 +19,7 @@ class Home_Page extends StatefulWidget {
 
 class _Home_PageState extends State<Home_Page> {
   String? uid;
+  int i = 0;
 
   String? email;
 
@@ -105,7 +107,11 @@ class _Home_PageState extends State<Home_Page> {
               ),
               ListTile(
                 title: const Text('Settings'),
-                onTap: () {},
+                onTap: () {
+                  Navigator.pushReplacement(
+                    context, MaterialPageRoute(builder: (context)=> Setting())
+                  );
+                },
               ),
               ListTile(
                 title: const Text('Logout'),
@@ -288,7 +294,7 @@ class _Home_PageState extends State<Home_Page> {
                                             crossAxisAlignment: CrossAxisAlignment.center,
                                           children: [
                                             Text(
-                                              "${news.docs[index]["news"]}",
+                                              "${news.size-(i++)}  ${news.docs[index]["news"]}",
                                               style: GoogleFonts.openSans(
                                                   textStyle:
                                                       const TextStyle(fontSize: 17)),

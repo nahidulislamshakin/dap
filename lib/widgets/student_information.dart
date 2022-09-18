@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dap/firebase/firebase_auth/authentication.dart';
 import 'package:dap/widgets/login_page.dart';
+import 'package:dap/widgets/setting.dart';
 import 'package:dap/widgets/teacher_information.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -99,7 +100,9 @@ class _StudentPageState extends State<StudentPage> {
             ),
             ListTile(
               title: const Text('Settings'),
-              onTap: () {},
+              onTap: () {
+                Navigator.pushReplacement(context,MaterialPageRoute(builder:(context)=>Setting()));
+              },
             ),
             ListTile(
               title: const Text('Logout'),

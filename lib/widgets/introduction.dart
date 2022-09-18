@@ -78,7 +78,7 @@ class IntroScreen extends StatelessWidget {
                       decoration: BoxDecoration(
                           color: Colors.green,
                           borderRadius: BorderRadius.circular(50)),
-                      child: FlatButton(
+                      child: TextButton(
                         child: const Text(
                           'Sign in',
                           style: TextStyle(
@@ -101,7 +101,7 @@ class IntroScreen extends StatelessWidget {
                       decoration: BoxDecoration(
                           color: Colors.green,
                           borderRadius: BorderRadius.circular(50)),
-                      child: FlatButton(
+                      child: TextButton(
                         child: const Text(
                           'Sign up',
                           style: TextStyle(

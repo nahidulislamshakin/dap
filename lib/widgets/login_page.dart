@@ -67,9 +67,12 @@ class _Login_PageState extends State<Login_Page> {
                                controller: numbController,
                                  keyboardType: TextInputType.emailAddress,
                                  onChanged: (value){
-                                 setState(() {
-                                   thisMail = value;
-                                 });
+                                 if(mounted){
+                                   setState(() {
+                                     thisMail = value;
+                                   });
+                                 }
+
                                  },
                                decoration: const InputDecoration(
                                  border: OutlineInputBorder(),
@@ -116,43 +119,50 @@ class _Login_PageState extends State<Login_Page> {
 
                const SizedBox(height: 10,),
 
-               RaisedButton(
+               ElevatedButton(
                  onPressed: ()async{
-                   final isValid = formkey.currentState?.validate();
-                   await _authService.signInWithEmailAndPassword(thisMail, thisPassword);
 
-                   if(_authService.user != null) {
-                     Navigator.pushReplacement(
-                         context, MaterialPageRoute(builder:
-                         (context) => Splash(imagePath: 'hand-loading.json', nextScreen: Home_Page(),)));
+                   try {
+
+                     final isValid = formkey.currentState?.validate();
+                     print("Login Button Pressed");
+                     await _authService.signInWithEmailAndPassword(thisMail, thisPassword);
+
+                     if(_authService.user != null) {
+                       Navigator.pushReplacement(
+                           context, MaterialPageRoute(builder:
+                           (context) => Splash(imagePath: 'hand-loading.json', nextScreen: Home_Page(),)));
+                     }
+                     //  else{
+                     //   valid = false;
+                     //   }
+                     //   final isValid = formkey.currentState?.validate();
+                   }catch(e) {
+                     print(e.toString());
                    }
-                 //  else{
-                  //   valid = false;
-                //   }
-                //   final isValid = formkey.currentState?.validate();
                  },
-                 color: Colors.green,
+                // color: Colors.green,
                  child: const Text("Sign in",style: TextStyle(color: Colors.white),),
                ),
 
                const SizedBox(height: 5,),
 
-               FlatButton(onPressed: (){},
+               TextButton(onPressed: (){},
                child: const Text("Forget password?",style: TextStyle(color: Colors.green),)),
 
               const SizedBox(
                  height: 20,
                ),
 
-               FlatButton(
+                TextButton(
                    onPressed: () {
                      Navigator.push(context,
                        MaterialPageRoute(
                            builder: (context) => Create_Account_Page()),
                      );
                    },
-                   color: Colors.green,
-                   child: const Text("Create Acoount",style: TextStyle(color:Colors.white),)),
+                  // color: Colors.green,
+                   child: const Text("Create Acoount",style: TextStyle(color:Colors.green),)),
               //
               const SizedBox(height: 200,),
 

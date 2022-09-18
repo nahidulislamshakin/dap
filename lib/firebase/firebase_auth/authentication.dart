@@ -26,6 +26,7 @@ class Authentication {
   }
 
   Future<UserAccount?> createAccountWithEmailAndPassword(String email, String password, String name, String id, String number) async{
+
   //  try{
       final UserCredential? userCredential = await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password).then((value) {
         FirebaseFirestore.instance.collection("Students").doc(value.user?.uid).set({"email":value.user?.email,
