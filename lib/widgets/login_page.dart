@@ -1,6 +1,7 @@
 
 import 'package:dap/firebase/firebase_auth/authentication.dart';
 import 'package:dap/widgets/splash_screen.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
 import '../account.dart';
@@ -122,11 +123,12 @@ class _Login_PageState extends State<Login_Page> {
                ElevatedButton(
                  onPressed: ()async{
 
-                   try {
+                  // try {
 
                      final isValid = formkey.currentState?.validate();
                      print("Login Button Pressed");
                      await _authService.signInWithEmailAndPassword(thisMail, thisPassword);
+
 
                      if(_authService.user != null) {
                        Navigator.pushReplacement(
@@ -137,9 +139,12 @@ class _Login_PageState extends State<Login_Page> {
                      //   valid = false;
                      //   }
                      //   final isValid = formkey.currentState?.validate();
-                   }catch(e) {
-                     print(e.toString());
-                   }
+                  // } on FirebaseAuthException catch(e) {
+                  //   it.exception?.printStackTrace();
+                 //    Fluttertoast.showToast(msg: e.message!, gravity: ToastGravity.TOP);
+                 //  } catch(e){
+                 //    print(e);
+                 // }
                  },
                 // color: Colors.green,
                  child: const Text("Sign in",style: TextStyle(color: Colors.white),),

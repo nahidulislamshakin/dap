@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dap/account.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class Authentication {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -17,12 +18,33 @@ class Authentication {
   }
 
   Stream<UserAccount?>? get user{
-    return _firebaseAuth.authStateChanges().map(userFromFirebase);
+  //  try{
+      print("get user is worked");
+      return _firebaseAuth.authStateChanges().map(userFromFirebase);
+
+   // } on FirebaseAuthException catch(error)
+  //  {
+  //    print(error.code);
+  //  } catch(error)
+  //  {
+   //   print(error);
+  //  }
+
   }
+//
+//   User? user(){
+//     print("get user is worked");
+//     return _firebaseAuth.currentUser;
+// }
 
   Future<UserAccount?> signInWithEmailAndPassword(String email, String password)async{
-    final UserCredential userCredential = await _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
-    return userFromFirebase(userCredential.user);
+  //  try {
+      final UserCredential userCredential = await _firebaseAuth
+          .signInWithEmailAndPassword(email: email, password: password);
+      return userFromFirebase(userCredential.user);
+ //   } on FirebaseAuthException catch (error){
+   //   Fluttertoast.showToast(msg: error.message!, gravity: ToastGravity.TOP);
+  //  }
   }
 
   Future<UserAccount?> createAccountWithEmailAndPassword(String email, String password, String name, String id, String number) async{
@@ -38,8 +60,8 @@ class Authentication {
 
       });
       return userFromFirebase(userCredential?.user);
-  //  }catch(error){
-   //   print(error);
+   // }on FirebaseAuthException catch(error){
+   //   print(error.code);
   //  }
 
   }
